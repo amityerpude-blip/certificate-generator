@@ -58,17 +58,23 @@ function update(){for(const [input,out] of [['name','outName'],['class','outClas
 function showLogoFallback(img){img.style.display='none';const fallback=img.parentElement.querySelector('.logo-fallback');if(fallback)fallback.style.display='flex';}
 ['kvsLogo','pmLogo'].forEach(id=>{const img=$(id);img.addEventListener('error',()=>showLogoFallback(img));if(img.complete&&img.naturalWidth===0)showLogoFallback(img);});
 const permanentSignature=$('signaturePreview');permanentSignature.style.display='block';permanentSignature.addEventListener('error',()=>{permanentSignature.style.display='none';$('signatureLine').style.display='block';});
-/* Remove the white matte from the stored signature so it remains transparent in preview and PDF. */
-permanentSignature.addEventListener('load',function makeSignatureTransparent(){
- if(permanentSignature.dataset.cleaned==='yes'||!permanentSignature.naturalWidth)return;
+/* Make the stored signature's white matte transparent. Handle cached images too. */
+function cleanPrincipalSignature(){
+ if(permanentSignature.dataset.cleaned==='yes'||!permanentSignature.complete||!permanentSignature.naturalWidth)return;
  try{
   const canvas=document.createElement('canvas');canvas.width=permanentSignature.naturalWidth;canvas.height=permanentSignature.naturalHeight;
   const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(permanentSignature,0,0);
-  const pixels=ctx.getImageData(0,0,canvas.width,canvas.height);const d=pixels.data;
-  for(let i=0;i<d.length;i+=4){const r=d[i],g=d[i+1],b=d[i+2];if(r>238&&g>238&&b>238){d[i+3]=0;}else if(r>215&&g>215&&b>215){const light=Math.min(r,g,b);d[i+3]=Math.round(d[i+3]*(255-light)/40);}}
-  ctx.putImageData(pixels,0,0);permanentSignature.dataset.cleaned='yes';permanentSignature.style.mixBlendMode='normal';permanentSignature.src=canvas.toDataURL('image/png');
- }catch(e){permanentSignature.style.mixBlendMode='multiply';}
-});
+  const imageData=ctx.getImageData(0,0,canvas.width,canvas.height),d=imageData.data;
+  for(let i=0;i<d.length;i+=4){
+   const r=d[i],g=d[i+1],b=d[i+2],min=Math.min(r,g,b),max=Math.max(r,g,b);
+   if(min>242&&max-min<18){d[i+3]=0;}
+   else if(min>218&&max-min<24){d[i+3]=Math.round(d[i+3]*(242-min)/24);}
+  }
+  ctx.putImageData(imageData,0,0);permanentSignature.dataset.cleaned='yes';permanentSignature.style.mixBlendMode='normal';permanentSignature.src=canvas.toDataURL('image/png');
+ }catch(e){console.warn('Could not process signature transparency:',e);permanentSignature.style.mixBlendMode='multiply';}
+}
+permanentSignature.addEventListener('load',cleanPrincipalSignature);
+if(permanentSignature.complete)cleanPrincipalSignature();
 ids.forEach(id=>$(id).addEventListener('input',update));
 
 function safeFileName(value){return (String(value||'Student').trim().replace(/[^a-z0-9]+/gi,'_').replace(/^_|_$/g,'').slice(0,80)||'Student');}
