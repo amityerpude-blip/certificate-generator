@@ -36,7 +36,7 @@
 <h3>Live certificate preview</h3><p class="hint">Landscape certificate · English and Hindi · Ready to print</p>
 <div class="stage"><div class="cert" id="certificate">
 <div class="inner"></div>
-<img class="logo" crossorigin="anonymous" src="https://commons.wikimedia.org/wiki/Special:FilePath/Kendriya%20Vidyalaya%20Family%20Logo.png" alt="KVS logo"><img class="logo kvs" crossorigin="anonymous" src="https://commons.wikimedia.org/wiki/Special:FilePath/PM%20SHRI%20KENDRIYA%20VIDYALAYA.svg" alt="PM SHRI logo">
+<img class="logo" crossorigin="anonymous" src="https://pnggallery.com/wp-content/uploads/kendriya-vidyalaya-sangathan-logo-01.png" alt="KVS logo"><img class="logo kvs" crossorigin="anonymous" src="https://commons.wikimedia.org/wiki/Special:FilePath/PM%20SHRI%20KENDRIYA%20VIDYALAYA.svg" alt="PM SHRI logo">
 <div class="school">पीएम श्री केंद्रीय विद्यालय डोंगरगढ़<small>PM SHRI KENDRIYA VIDYALAYA DONGARGARH</small><small>Regional Office: Raipur · क्षेत्रीय कार्यालय: रायपुर</small></div>
 <div class="title">प्रशंसा प्रमाण-पत्र</div><div class="sub">CERTIFICATE OF ACHIEVEMENT</div><div class="session-top">सत्र / ACADEMIC SESSION: <span id="outSession">[Session]</span></div><div class="laurel">✦ ❖ ✦</div>
 
@@ -53,7 +53,7 @@
 <script>
 const $=id=>document.getElementById(id);
 const ids=['name','hname','class','hclass','activity','hactivity','achievement','hachievement','session'];
-function update(){for(const [input,out] of [['name','outName'],['hname','outHName'],['class','outClass'],['hclass','outHClass'],['activity','outActivity'],['hactivity','outHActivity'],['achievement','outAchievement'],['hachievement','outHAchievement']])$(out).textContent=$(input).value.trim()||'['+input+']';$('outDate').textContent=dateText($('date').value);$('outSession').textContent=$('session').value.trim()||'—';}
+function update(){for(const [input,out] of [['name','outName'],['hname','outHName'],['class','outClass'],['hclass','outHClass'],['activity','outActivity'],['hactivity','outHActivity'],['achievement','outAchievement'],['hachievement','outHAchievement']])$(out).textContent=$(input).value.trim()||'['+input+']';$('outSession').textContent=$('session').value.trim()||'—';}
 ids.forEach(id=>$(id).addEventListener('input',update));
 $('reset').addEventListener('click',()=>{$('form').reset();$('message').textContent='';update();});
 $('print').addEventListener('click',()=>{if(!valid())return;update();window.print();});
