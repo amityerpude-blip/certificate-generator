@@ -20,13 +20,9 @@
 <form id="form">
 <div class="grid">
 <label class="field">Student name (English) *<input id="name" required placeholder="e.g. Aarav Sharma"></label>
-<label class="field hi">विद्यार्थी का नाम (हिंदी) *<input id="hname" class="hi" required placeholder="उदा. आरव शर्मा"></label>
 <label class="field">Class and section *<input id="class" required placeholder="e.g. Class VI-A"></label>
-<label class="field hi">कक्षा और अनुभाग *<input id="hclass" class="hi" required placeholder="उदा. कक्षा छठी-अ"></label>
 <label class="field">Classroom activity *<input id="activity" required placeholder="e.g. Science Model Presentation"></label>
-<label class="field hi">कक्षा गतिविधि *<input id="hactivity" class="hi" required placeholder="उदा. विज्ञान मॉडल प्रस्तुति"></label>
 <label class="field">Achievement / teacher's appreciation *<textarea id="achievement" required placeholder="e.g. for creativity, confident presentation and thoughtful answers"></textarea></label>
-<label class="field hi">उपलब्धि / प्रशंसा का विवरण *<textarea id="hachievement" class="hi" required placeholder="उदा. रचनात्मकता, आत्मविश्वासपूर्ण प्रस्तुति और विचारपूर्ण उत्तरों के लिए"></textarea></label>
 <label class="field">Academic session<input id="session" placeholder="e.g. 2026–27"></label>
 <div class="field"><span>Principal signature</span><span class="hint">Permanent signature image: <strong>principal-signature.png</strong> (stored in the website repository; no upload is needed).</span></div>
 </div>
@@ -38,7 +34,7 @@
 <div class="stage"><div class="cert" id="certificate">
 <div class="inner"></div>
 <div class="logo-box kvs-logo"><img class="logo-img" id="kvsLogo" src="https://pnggallery.com/wp-content/uploads/kendriya-vidyalaya-sangathan-logo-01.png" alt="KVS logo"><span class="logo-fallback">KVS</span></div>
-<div class="school"><span class="school-hi">केन्द्रीय विद्यालय संगठन</span><small style="font-size:1.05em">KENDRIYA VIDYALAYA SANGATHAN</small><small>(शिक्षा मंत्रालय, भारत सरकार)</small><small>(Ministry of Education, Govt. of India)</small><small style="color:#7b1723;font-size:.95em">रायपुर संभाग, RAIPUR REGION</small></div>
+<div class="school"><span class="school-hi">केन्द्रीय विद्यालय संगठन</span><small style="font-size:1.05em">KENDRIYA VIDYALAYA SANGATHAN</small><small>(Ministry of Education, Govt. of India) / (शिक्षा मंत्रालय, भारत सरकार)</small><small style="color:#7b1723;font-size:.95em">Raipur Region / रायपुर संभाग</small></div>
 <div class="title">CLASSROOM AWARD</div><div class="session-top"><span>Member: __________________</span><span>Year: <strong id="outSession">2026</strong></span></div>
 <div class="bodycopy">
 <p><strong>Name of The KV:</strong> PM SHRI KENDRIYA VIDYALAYA DONGARGARH</p>
@@ -55,9 +51,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 const $=id=>document.getElementById(id);
-const ids=['name','hname','class','hclass','activity','hactivity','achievement','hachievement','session'];
-const requiredIds=['name','hname','class','hclass','activity','hactivity','achievement','hachievement'];
-function update(){for(const [input,out] of [['name','outName'],['hname','outHName'],['class','outClass'],['hclass','outHClass'],['activity','outActivity'],['hactivity','outHActivity'],['achievement','outAchievement'],['hachievement','outHAchievement']])$(out).textContent=$(input).value.trim()||'['+input+']';$('outSession').textContent=$('session').value.trim()||'2026';}
+const ids=['name','class','activity','achievement','session'];
+const requiredIds=['name','class','activity','achievement'];
+function update(){for(const [input,out] of [['name','outName'],['class','outClass'],['activity','outActivity'],['achievement','outAchievement']])$(out).textContent=$(input).value.trim()||'['+input+']';$('outSession').textContent=$('session').value.trim()||'2026';}
 function showLogoFallback(img){img.style.display='none';const fallback=img.parentElement.querySelector('.logo-fallback');if(fallback)fallback.style.display='flex';}
 ['kvsLogo','pmLogo'].forEach(id=>{const img=$(id);img.addEventListener('error',()=>showLogoFallback(img));if(img.complete&&img.naturalWidth===0)showLogoFallback(img);});
 const permanentSignature=$('signaturePreview');permanentSignature.style.display='block';permanentSignature.addEventListener('error',()=>{permanentSignature.style.display='none';$('signatureLine').style.display='block';});
@@ -67,20 +63,16 @@ function safeFileName(value){return (String(value||'Student').trim().replace(/[^
 function normHeader(value){return String(value||'').toLowerCase().replace(/[\\s_\\-\\/()]+/g,'');}
 function getCell(row,key,aliases=[]){const wanted=[key,...aliases].map(normHeader);const header=Object.keys(row).find(k=>wanted.includes(normHeader(k)));return header===undefined?'':String(row[header]??'').trim();}
 function mapBulkRow(row){return {
- name:getCell(row,'name',['student name english','student name','english name']),
- hname:getCell(row,'hname',['student name hindi','विद्यार्थी का नाम','hindi name']),
+ name:getCell(row,'name',['student name','student name english','english name']),
  'class':getCell(row,'class',['class section','class and section','class/section']),
- hclass:getCell(row,'hclass',['कक्षा और अनुभाग','class hindi','class section hindi']),
  activity:getCell(row,'activity',['classroom activity','activity english']),
- hactivity:getCell(row,'hactivity',['कक्षा गतिविधि','activity hindi']),
- achievement:getCell(row,'achievement',['achievement english','teacher appreciation','achievement details']),
- hachievement:getCell(row,'hachievement',['उपलब्धि का विवरण','achievement hindi']),
- session:getCell(row,'session',['academic session','सत्र'])
+ achievement:getCell(row,'achievement',['teacher appreciation','achievement details','achievement english']),
+ session:getCell(row,'session',['academic session'])
 };}
 function applyBulkRow(data){for(const id of ids){$(id).value=data[id]||'';}update();}
 function validateBulkRow(data,index){const missing=requiredIds.filter(id=>!String(data[id]||'').trim());return missing.length?'Row '+(index+2)+': missing '+missing.join(', '):'';}
 $('templateBtn').addEventListener('click',()=>{
- const headers=['name','hname','class','hclass','activity','hactivity','achievement','hachievement','session'];
+ const headers=['name','class','activity','achievement','session'];
  const sample={name:'Aarav Sharma',hname:'आरव शर्मा',class:'Class VI-A',hclass:'कक्षा छठी-अ',activity:'Science Model Presentation',hactivity:'विज्ञान मॉडल प्रस्तुति',achievement:'creativity, teamwork and confident presentation',hachievement:'रचनात्मकता, टीमवर्क और आत्मविश्वासपूर्ण प्रस्तुति',session:'2026–27'};
  const ws=XLSX.utils.json_to_sheet([sample],{header:headers});ws['!cols']=headers.map(h=>({wch:Math.max(18,h.length+4)}));
  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Students');XLSX.writeFile(wb,'Student_Achievement_Bulk_Template.xlsx');
