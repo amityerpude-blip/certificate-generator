@@ -36,11 +36,11 @@
 <div class="logo-box pm-logo"><img class="logo-img" id="pmLogo" src="pm-shri-logo.png" alt="PM SHRI logo"><span class="logo-fallback pm-fallback">PM SHRI</span></div>
 <img class="watermark" src="https://pnggallery.com/wp-content/uploads/kendriya-vidyalaya-sangathan-logo-01.png" alt="" aria-hidden="true">
 <div class="school"><span class="school-hi">केन्द्रीय विद्यालय संगठन</span><small style="font-size:1.05em">KENDRIYA VIDYALAYA SANGATHAN</small><small>(Ministry of Education, Govt. of India) / (शिक्षा मंत्रालय, भारत सरकार)</small><small style="color:#7b1723;font-size:.95em">Raipur Region / रायपुर संभाग</small></div>
-<div class="title">CLASSROOM AWARD</div><div class="session-top"><span>Month: <span class="write-space">....................................</span></span><span>Year: <span class="write-space">................</span><span id="outSession"></span></span></div>
+<div class="title">CLASSROOM AWARD</div><div class="session-top"><span>Month: </span><span>Year: <span id="outSession"></span></span></div>
 <div class="bodycopy">
-<p><strong>Name of the KV:</strong> <strong class="detail-dots">................................................................................</strong><strong id="outKV"></strong></p>
-<p><strong>Name of Student:</strong> <strong class="detail-dots">................................................................................</strong><strong id="outName"></strong></p>
-<p><strong>Class &amp; Section:</strong> <strong class="detail-dots">................................................................</strong><strong id="outClass"></strong></p>
+<p><strong>Name of the KV:</strong> <strong id="outKV"></strong></p>
+<p><strong>Name of Student:</strong> <strong id="outName"></strong></p>
+<p><strong>Class &amp; Section:</strong> <strong id="outClass"></strong></p>
 </div>
 <div class="traits-label">Traits Recognised &amp; Awarded</div>
 <div class="award-box"><span id="outActivity"></span><span id="outAchievement"></span></div>
@@ -79,7 +79,7 @@ ids.forEach(id=>$(id).addEventListener('input',update));
 
 function safeFileName(value){return (String(value||'Student').trim().replace(/[^a-z0-9]+/gi,'_').replace(/^_|_$/g,'').slice(0,80)||'Student');}
 function normHeader(value){return String(value||'').toLowerCase().replace(/[\\s_\\-\\/()]+/g,'');}
-function getCell(row,key,aliases=[]){const wanted=[key,...aliases].map(normHeader);const header=Object.keys(row).find(k=>wanted.includes(normHeader(k)));return header===undefined?'':String(row[header]??'').trim();}
+function getCell(row,key,aliases=[]){const wanted=[key,aliases].map(normHeader);const header=Object.keys(row).find(k=>wanted.includes(normHeader(k)));return header===undefined?'':String(row[header]??'').trim();}
 function mapBulkRow(row){return {
  name:getCell(row,'name',['student name','student name english','english name']),
  'class':getCell(row,'class',['class section','class and section','class/section']),
