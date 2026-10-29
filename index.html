@@ -19,6 +19,7 @@
 <h3>Student & achievement details</h3><p class="hint">Enter the details below. The certificate preview updates automatically.</p>
 <form id="form">
 <div class="grid">
+<label class="field">KV name *<input id="kv" required placeholder="e.g. PM SHRI Kendriya Vidyalaya Dongargarh"></label>
 <label class="field">Student name (English) *<input id="name" required placeholder="e.g. Aarav Sharma"></label>
 <label class="field">Class and section *<input id="class" required placeholder="e.g. Class VI-A"></label>
 <label class="field">Classroom activity *<input id="activity" required placeholder="e.g. Science Model Presentation"></label>
@@ -53,9 +54,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 const $=id=>document.getElementById(id);
-const ids=['name','class','activity','achievement','month','session'];
+const ids=['kv','name','class','activity','achievement','month','session'];
 const requiredIds=['name','class','activity','achievement'];
-function update(){for(const [input,out] of [['name','outName'],['class','outClass'],['activity','outActivity'],['achievement','outAchievement']])$(out).textContent=$(input).value.trim();$('outMonth').textContent=$('month').value;$('outSession').textContent=$('session').value.trim()||'';}
+function update(){$('outKV').textContent=$('kv').value.trim();for(const [input,out] of [['name','outName'],['class','outClass'],['activity','outActivity'],['achievement','outAchievement']])$(out).textContent=$(input).value.trim();$('outMonth').textContent=$('month').value;$('outSession').textContent=$('session').value.trim()||'';}
 function showLogoFallback(img){img.style.display='none';const fallback=img.parentElement.querySelector('.logo-fallback');if(fallback)fallback.style.display='flex';}
 ['kvsLogo','pmLogo'].forEach(id=>{const img=$(id);img.addEventListener('error',()=>showLogoFallback(img));if(img.complete&&img.naturalWidth===0)showLogoFallback(img);});
 const permanentSignature=$('signaturePreview');permanentSignature.style.display='block';permanentSignature.addEventListener('error',()=>{permanentSignature.style.display='none';$('signatureLine').style.display='block';});
@@ -82,6 +83,7 @@ function safeFileName(value){return (String(value||'Student').trim().replace(/[^
 function normHeader(value){return String(value||'').toLowerCase().replace(/[\\s_\\-\\/()]+/g,'');}
 function getCell(row,key,aliases=[]){const wanted=[key,aliases].map(normHeader);const header=Object.keys(row).find(k=>wanted.includes(normHeader(k)));return header===undefined?'':String(row[header]??'').trim();}
 function mapBulkRow(row){return {
+ kv:getCell(row,'kv',['kv name','kendriya vidyalaya name','school name']),
  name:getCell(row,'name',['student name','student name english','english name']),
  'class':getCell(row,'class',['class section','class and section','class/section']),
  activity:getCell(row,'activity',['classroom activity','activity english']),
@@ -92,8 +94,8 @@ function mapBulkRow(row){return {
 function applyBulkRow(data){for(const id of ids){$(id).value=data[id]||'';}update();}
 function validateBulkRow(data,index){const missing=requiredIds.filter(id=>!String(data[id]||'').trim());return missing.length?'Row '+(index+2)+': missing '+missing.join(', '):'';}
 $('templateBtn').addEventListener('click',()=>{
- const headers=['name','class','activity','achievement','month','session'];
- const sample={name:'',class:'',activity:'',achievement:'',month:'',session:''};
+ const headers=['kv','name','class','activity','achievement','month','session'];
+ const sample={kv:'',name:'',class:'',activity:'',achievement:'',month:'',session:''};
  const ws=XLSX.utils.json_to_sheet([sample],{header:headers});ws['!cols']=headers.map(h=>({wch:Math.max(18,h.length+4)}));
  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Students');XLSX.writeFile(wb,'Student_Achievement_Bulk_Template.xlsx');
 });
